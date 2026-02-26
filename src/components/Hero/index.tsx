@@ -13,47 +13,39 @@ const Hero = () => {
           <div className="-mx-4 flex flex-wrap">
             <div className="w-full px-4">
               <div className="mx-auto max-w-[800px] text-center">
-                <div className="flex items-center justify-center gap-2 md:gap-10 text-center mb-10 flex-col md:flex-row md:mb-20">
+                <div className="flex items-center justify-center gap-4 md:gap-8 text-center mb-10 flex-col md:flex-row md:mb-20">
                   <Image
-                    className="block dark:hidden animate-bounce animate-infinite animate-duration-[2000ms] animate-delay-0 animate-ease-in animate-normal animate-fill-forwards"
+                    className="block dark:hidden"
                     src="/images/logo/logo-rob.svg"
                     alt="Code Craftz"
-                    width={125}
-                    height={125}
+                    width={100}
+                    height={100}
                   />
                   <Image
-                    className="hidden dark:block animate-bounce animate-infinite animate-duration-[2000ms] animate-delay-0 animate-ease-in animate-normal animate-fill-forwards"
+                    className="hidden dark:block"
                     src="/images/logo/logo-rob-white.svg"
                     alt="Code Craftz"
-                    width={125}
-                    height={125}
+                    width={100}
+                    height={100}
                   />
-                  <div>
-                    <h1 className="text-7xl hidden md:inline-block font-serif dark:text-gray-200">
-                      |
-                    </h1>
-                  </div>
                   <LogoText />
                 </div>
-                <h1 className="mb-5 text-3xl font-bold leading-tight text-black dark:text-white sm:text-4xl sm:leading-tight md:text-5xl md:leading-tight">
-                  Impulsa tu presencia digital con soluciones a tu medida
+                <h1 className="mb-6 text-4xl font-bold leading-tight text-black dark:text-white sm:text-5xl sm:leading-tight md:text-6xl md:leading-tight">
+                  Transformamos tus ideas en <span className="text-primary">soluciones digitales</span> exitosas
                 </h1>
-                <p className="mb-12 text-base leading-relaxed text-body-color dark:text-body-color-dark sm:text-lg md:text-xl">
-                  Diseñamos y desarrollamos sitios web y aplicaciones modernas, rápidas y seguras,
-                  pensadas para que tu negocio destaque y conecte con más clientes.
-                  Desde emprendedores que inician su camino, hasta empresas consolidadas que buscan
-                  optimizar su presencia online: transformamos ideas en experiencias digitales que generan resultados.
+                <p className="mb-12 text-lg leading-relaxed text-body-color dark:text-body-color-dark sm:text-xl md:text-2xl max-w-3xl mx-auto">
+                  Especialistas en desarrollo web y aplicaciones personalizadas. Desde sitios web informativos hasta plataformas complejas, creamos experiencias digitales que impulsan tu negocio.
                 </p>
                 <div className="flex flex-col items-center justify-center space-y-4 sm:flex-row sm:space-x-4 sm:space-y-0">
                   <Link
-                    href="/contact"
-                    className="rounded-xs bg-primary px-8 py-4 text-base font-semibold text-white duration-300 ease-in-out hover:bg-primary/80"
+                    href="#contact"
+                    className="rounded-xs bg-primary px-8 py-4 text-base font-semibold text-white duration-300 ease-in-out hover:bg-primary/80 shadow-lg hover:shadow-xl transition-all"
                   >
-                    🚀 Comienza tu proyecto
+                    Comienza tu proyecto
                   </Link>
                   <Link
-                    href="/services"
-                    className="inline-block rounded-xs bg-black px-8 py-4 text-base font-semibold text-white duration-300 ease-in-out hover:bg-black/90 dark:bg-white/10 dark:text-white dark:hover:bg-white/5"
+                    href="#features"
+                    className="inline-block rounded-xs border-2 border-primary bg-transparent px-8 py-4 text-base font-semibold text-primary duration-300 ease-in-out hover:bg-primary hover:text-white dark:border-primary dark:text-primary dark:hover:bg-primary dark:hover:text-white"
                   >
                     Conoce nuestros servicios
                   </Link>

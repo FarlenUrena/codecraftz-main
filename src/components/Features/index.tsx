@@ -8,8 +8,8 @@ const Features = () => {
       <section id="features" className="py-16 md:py-20 lg:py-28">
         <div className="container">
           <SectionTitle
-            title="Servicios"
-            paragraph="En Code Craftz diseñamos y desarrollamos soluciones digitales a la medida para impulsar tu negocio. Desde sitios web informativos hasta aplicaciones rápidas y seguras, te ayudamos a conectar mejor con tus clientes, dar credivilidad a tu negocio y crecer online."
+            title="Nuestros Servicios"
+            paragraph="Ofrecemos soluciones completas de desarrollo web adaptadas a las necesidades de tu negocio. Cada proyecto es único y diseñado para generar resultados tangibles."
             center
           />
 

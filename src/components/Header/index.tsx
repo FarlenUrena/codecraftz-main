@@ -58,17 +58,17 @@ const Header = () => {
               >
                 <Image
                   src="/images/logo/logo-rob.svg"
-                  alt="logo"
-                  width={50}
-                  height={100}
-                  className="w-full dark:hidden"
+                  alt="Code Craftz"
+                  width={60}
+                  height={60}
+                  className="w-auto h-auto dark:hidden"
                 />
                 <Image
                   src="/images/logo/logo-rob-white.svg"
-                  alt="logo"
-                  width={50}
-                  height={100}
-                  className="hidden w-full dark:block"
+                  alt="Code Craftz"
+                  width={60}
+                  height={60}
+                  className="hidden w-auto h-auto dark:block"
                 />
               </Link>
             </div>
@@ -166,7 +166,7 @@ const Header = () => {
                   Sign In
                 </Link> */}
                 <Link
-                  href="/contact"
+                  href="#contact"
                   className="ease-in-up shadow-btn hover:shadow-btn-hover bg-primary hover:bg-primary/90 hidden rounded-md px-8 py-3 text-base font-medium text-white transition duration-300 md:block md:px-9 lg:px-6 xl:px-9"
                 >
                   Contact

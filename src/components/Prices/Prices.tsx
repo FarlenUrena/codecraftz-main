@@ -75,7 +75,7 @@ const PriceCard = ({
     const message = `Hola, estoy interesado en el plan ${type}, ¿me brindas más información? ¡Gracias!`;
     onDefaultMessageChange(message);
 
-    route.push("#contacto");
+    route.push("#contact");
   };
 
   const [showFeatures, setShowFeatures] = useState(false);
@@ -457,19 +457,17 @@ const PriceCard = ({
 
 
 const Prices = ({ onDefaultMessageChange }) => (
-  <section className="flex justify-center items-center h-full flex-col text-black">
+  <section id="prices" className="flex justify-center items-center h-full flex-col text-black">
     <div className="container px-5 py-24 mx-auto">
       <div className="flex flex-col text-center w-full mb-20">
         <h1 className="text-3xl md:text-5xl font-bold dark:text-gray-200">
-          Precios
+          Planes y Precios
         </h1>
-        <p className="lg:w-2/3 mx-auto leading-relaxed text-sm md:text-base text-gray-700 mt-3 dark:text-white">
-          Estos son los planes que ofrecemos, si no sabes cuál necesitas, no
-          dudes en preguntarnos. No nos limitamos solo a esas funcionalidades;
-          puedes preguntarnos con toda confianza y sin ningún compromiso.
+        <p className="lg:w-2/3 mx-auto leading-relaxed text-base md:text-lg text-gray-700 mt-4 dark:text-white">
+          Selecciona el plan que mejor se adapte a las necesidades de tu negocio. Todos nuestros planes son personalizables y podemos ajustarlos según tus requerimientos específicos.
         </p>
         <div className="flex mt-6 justify-center">
-          <div className="w-16 h-1 rounded-full bg-cyan-500 inline-flex"></div>
+          <div className="w-16 h-1 rounded-full bg-primary inline-flex"></div>
         </div>
       </div>
       <div className="flex flex-wrap -m-4">

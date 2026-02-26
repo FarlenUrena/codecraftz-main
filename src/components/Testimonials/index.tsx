@@ -5,28 +5,28 @@ import SingleTestimonial from "./SingleTestimonial";
 const testimonialData: Testimonial[] = [
   {
     id: 1,
-    name: "Musharof Chy",
-    designation: "Founder @TailGrids",
+    name: "María González",
+    designation: "Fundadora @EcoMarket",
     content:
-      "Our members are so impressed. It's intuitive. It's clean. It's distraction free. If you're building a community.",
+      "Code Craftz transformó completamente nuestra presencia digital. El sitio web que desarrollaron superó todas nuestras expectativas. Profesionales, puntuales y con un excelente servicio al cliente.",
     image: "/images/testimonials/auth-01.png",
     star: 5,
   },
   {
     id: 2,
-    name: "Devid Weilium",
-    designation: "Founder @UIdeck",
+    name: "Carlos Ramírez",
+    designation: "CEO @TechSolutions",
     content:
-      "Our members are so impressed. It's intuitive. It's clean. It's distraction free. If you're building a community.",
+      "Trabajar con Code Craftz fue una experiencia excepcional. Entendieron perfectamente nuestras necesidades y crearon una solución que ha aumentado significativamente nuestras conversiones. Altamente recomendados.",
     image: "/images/testimonials/auth-02.png",
     star: 5,
   },
   {
     id: 3,
-    name: "Lethium Frenci",
-    designation: "Founder @Lineicons",
+    name: "Ana Martínez",
+    designation: "Directora @DigitalAgency",
     content:
-      "Our members are so impressed. It's intuitive. It's clean. It's distraction free. If you're building a community.",
+      "El equipo de Code Craftz es increíblemente talentoso. Desarrollaron nuestra aplicación web con atención al detalle y siempre estuvieron disponibles para resolver cualquier duda. El resultado final es simplemente perfecto.",
     image: "/images/testimonials/auth-03.png",
     star: 5,
   },
@@ -37,8 +37,8 @@ const Testimonials = () => {
     <section className="dark:bg-bg-color-dark bg-gray-light relative z-10 py-16 md:py-20 lg:py-28">
       <div className="container">
         <SectionTitle
-          title="What Our Users Says"
-          paragraph="There are many variations of passages of Lorem Ipsum available but the majority have suffered alteration in some form."
+          title="Lo que dicen nuestros clientes"
+          paragraph="Nuestros clientes confían en nosotros para llevar sus proyectos al siguiente nivel. Descubre sus experiencias trabajando con Code Craftz."
           center
         />
 
