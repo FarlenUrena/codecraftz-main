@@ -1,34 +1,39 @@
 "use client";
+
 import Image from "next/image";
 import Link from "next/link";
+import { useLanguage } from "@/contexts/LanguageContext";
+import { translations } from "@/lib/translations";
 
 const Footer = () => {
+  const { lang } = useLanguage();
+  const t = translations[lang].footer;
+
   return (
-    <>
-      <footer className="relative z-10 bg-white pt-16 dark:bg-gray-dark md:pt-20 lg:pt-24">
-        <div className="container">
-          <div className="-mx-4 flex flex-wrap">
-            <div className="w-full px-4 md:w-1/2 lg:w-4/12 xl:w-5/12">
-              <div className="mb-12 max-w-[360px] lg:mb-16">
-                <Link href="/" className="mb-8 inline-block">
-                  <Image
-                    src="/images/logo/logo-2.svg"
-                    alt="logo"
-                    className="w-full dark:hidden"
-                    width={140}
-                    height={30}
-                  />
-                  <Image
-                    src="/images/logo/logo.svg"
-                    alt="logo"
-                    className="hidden w-full dark:block"
-                    width={140}
-                    height={30}
-                  />
-                </Link>
-                <p className="mb-9 text-base leading-relaxed text-body-color dark:text-body-color-dark">
-                  Code Craftz es una empresa especializada en desarrollo web y aplicaciones personalizadas. Transformamos tus ideas en soluciones digitales que impulsan tu negocio.
-                </p>
+    <footer className="relative z-10 border-t border-stroke-stroke bg-white pt-16 dark:border-stroke-dark dark:bg-[#0f0f11] md:pt-20 lg:pt-24">
+      <div className="container">
+        <div className="-mx-4 flex flex-wrap">
+          <div className="w-full px-4 md:w-1/2 lg:w-4/12 xl:w-5/12">
+            <div className="mb-12 max-w-[360px] lg:mb-16">
+              <Link href="/" className="mb-8 inline-block">
+                <Image
+                  src="/images/logo/logo-2.svg"
+                  alt="logo"
+                  className="w-full dark:hidden"
+                  width={140}
+                  height={30}
+                />
+                <Image
+                  src="/images/logo/logo.svg"
+                  alt="logo"
+                  className="hidden w-full dark:block"
+                  width={140}
+                  height={30}
+                />
+              </Link>
+              <p className="mb-9 max-w-sm text-[15px] leading-relaxed text-body-color dark:text-body-color-dark">
+                {t.description}
+              </p>
                 <div className="flex items-center">
                   {process.env.NEXT_PUBLIC_WHATSAPP && (
                     <a
@@ -83,8 +88,8 @@ const Footer = () => {
 
             <div className="w-full px-4 sm:w-1/2 md:w-1/2 lg:w-2/12 xl:w-2/12">
               <div className="mb-12 lg:mb-16">
-                <h2 className="mb-10 text-xl font-bold text-black dark:text-white">
-                  Servicios
+                <h2 className="mb-8 text-sm font-semibold uppercase tracking-wider text-black dark:text-white">
+                  {t.services}
                 </h2>
                 <ul>
                   <li>
@@ -92,7 +97,15 @@ const Footer = () => {
                       href="#features"
                       className="mb-4 inline-block text-base text-body-color duration-300 hover:text-primary dark:text-body-color-dark dark:hover:text-primary"
                     >
-                      Desarrollo Web
+                      {t.webDev}
+                    </Link>
+                  </li>
+                  <li>
+                    <Link
+                      href="#projects"
+                      className="mb-4 inline-block text-base text-body-color duration-300 hover:text-primary dark:text-body-color-dark dark:hover:text-primary"
+                    >
+                      {t.projects}
                     </Link>
                   </li>
                   <li>
@@ -100,7 +113,7 @@ const Footer = () => {
                       href="#prices"
                       className="mb-4 inline-block text-base text-body-color duration-300 hover:text-primary dark:text-body-color-dark dark:hover:text-primary"
                     >
-                      Nuestros Planes
+                      {t.plans}
                     </Link>
                   </li>
                   <li>
@@ -108,7 +121,7 @@ const Footer = () => {
                       href="#contact"
                       className="mb-4 inline-block text-base text-body-color duration-300 hover:text-primary dark:text-body-color-dark dark:hover:text-primary"
                     >
-                      Contacto
+                      {t.contactLink}
                     </Link>
                   </li>
                 </ul>
@@ -117,8 +130,8 @@ const Footer = () => {
 
             <div className="w-full px-4 sm:w-1/2 md:w-1/2 lg:w-2/12 xl:w-2/12">
               <div className="mb-12 lg:mb-16">
-                <h2 className="mb-10 text-xl font-bold text-black dark:text-white">
-                  Empresa
+                <h2 className="mb-8 text-sm font-semibold uppercase tracking-wider text-black dark:text-white">
+                  {t.company}
                 </h2>
                 <ul>
                   <li>
@@ -126,15 +139,15 @@ const Footer = () => {
                       href="#features"
                       className="mb-4 inline-block text-base text-body-color duration-300 hover:text-primary dark:text-body-color-dark dark:hover:text-primary"
                     >
-                      Sobre Nosotros
+                      {t.about}
                     </Link>
                   </li>
                   <li>
                     <Link
                       href="#prices"
                       className="mb-4 inline-block text-base text-body-color duration-300 hover:text-primary dark:text-body-color-dark dark:hover:text-primary"
-                      >
-                      Precios
+                    >
+                      {t.pricing}
                     </Link>
                   </li>
                   <li>
@@ -142,7 +155,7 @@ const Footer = () => {
                       href="#contact"
                       className="mb-4 inline-block text-base text-body-color duration-300 hover:text-primary dark:text-body-color-dark dark:hover:text-primary"
                     >
-                      Soporte
+                      {t.support}
                     </Link>
                   </li>
                 </ul>
@@ -151,8 +164,8 @@ const Footer = () => {
 
             <div className="w-full px-4 md:w-1/2 lg:w-4/12 xl:w-3/12">
               <div className="mb-12 lg:mb-16">
-                <h2 className="mb-10 text-xl font-bold text-black dark:text-white">
-                  Contacto
+                <h2 className="mb-8 text-sm font-semibold uppercase tracking-wider text-black dark:text-white">
+                  {t.contact}
                 </h2>
                 <ul>
                   <li>
@@ -160,7 +173,7 @@ const Footer = () => {
                       href="#contact"
                       className="mb-4 inline-block text-base text-body-color duration-300 hover:text-primary dark:text-body-color-dark dark:hover:text-primary"
                     >
-                      Envíanos un mensaje
+                      {t.sendMessage}
                     </Link>
                   </li>
                   <li>
@@ -170,7 +183,7 @@ const Footer = () => {
                       rel="noopener noreferrer"
                       className="mb-4 inline-block text-base text-body-color duration-300 hover:text-primary dark:text-body-color-dark dark:hover:text-primary"
                     >
-                      WhatsApp
+                      {t.whatsapp}
                     </a>
                   </li>
                   <li>
@@ -186,14 +199,14 @@ const Footer = () => {
             </div>
           </div>
 
-          <div className="h-px w-full bg-linear-to-r from-transparent via-[#D2D8E183] to-transparent dark:via-[#959CB183]"></div>
+          <div className="border-t border-stroke-stroke dark:border-stroke-dark" />
           <div className="py-8">
-            <p className="text-center text-base text-body-color dark:text-white">
-              © {new Date().getFullYear()} Code Craftz. Todos los derechos reservados.
+            <p className="text-center text-sm text-body-color dark:text-body-color-dark">
+              © {new Date().getFullYear()} Code Craftz. {t.copyright}
             </p>
           </div>
         </div>
-        <div className="absolute right-0 top-14 z-[-1]">
+        <div className="absolute right-0 top-14 z-[-1] hidden">
           <svg
             width="55"
             height="99"
@@ -267,7 +280,7 @@ const Footer = () => {
             </defs>
           </svg>
         </div>
-        <div className="absolute bottom-24 left-0 z-[-1]">
+        <div className="absolute bottom-24 left-0 z-[-1] hidden">
           <svg
             width="79"
             height="94"
@@ -384,7 +397,6 @@ const Footer = () => {
           </svg>
         </div>
       </footer>
-    </>
   );
 };
 

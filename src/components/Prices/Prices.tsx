@@ -1,674 +1,351 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
+import {
+  pricingOptions,
+  BASE_PRICE,
+  DOWN_PAYMENT_PERCENT,
+  DOWN_PAYMENT_MIN,
+  INSTALLMENT_MONTHS,
+} from "./pricingOptions";
+import { categoryLabels } from "./pricingOptions";
+import type { PricingOption } from "@/types/pricingOption";
+import { useLanguage } from "@/contexts/LanguageContext";
+import { translations } from "@/lib/translations";
 
-const PriceCard = ({
-  color,
-  type,
-  // price,
-  features,
-  isPopular = false,
-  // mensualidad,
-  noIncluye,
+const Prices = ({
   onDefaultMessageChange,
+}: {
+  onDefaultMessageChange?: (message: string) => void;
 }) => {
-  let borderColor = "";
-  let borderColorHover = "";
-  let textColor = "";
-  let darkBorderColor = "";
-  let darkTextColor = "";
-  let buttonColor = "";
+  const { lang } = useLanguage();
+  const t = translations[lang].prices;
+  const categoryLabelsTranslated = t.categories;
+  const [selectedIds, setSelectedIds] = useState<Set<string>>(
+    new Set(["seo-basico"])
+  );
+  const [projectContext, setProjectContext] = useState("");
+  const router = useRouter();
 
-  switch (color) {
-    case "gray":
-      borderColor = "border-gray-600";
-      borderColorHover = "hover:border-gray-300 dark:hover:border-gray-300";
-      textColor = "text-gray-900";
-      darkBorderColor = "dark:border-gray-500";
-      darkTextColor = "dark:text-white ";
-      buttonColor =
-        "dark:bg-gray-800 bg-gray-700 hover:bg-gray-800 dark:hover:bg-gray-700";
-      break;
-    case "yellow":
-      borderColor = "border-yellow-800";
-      borderColorHover = "hover:border-yellow-400 dark:hover:border-yellow-300";
-      textColor = "text-yellow-900";
-      darkBorderColor = "dark:border-yellow-500";
-      darkTextColor = "dark:text-white";
-      buttonColor =
-        "dark:bg-yellow-800 bg-yellow-800 hover:bg-yellow-900 dark:hover:bg-yellow-700";
-      break;
-    case "emerald":
-      borderColor = "border-emerald-800";
-      borderColorHover =
-        "hover:border-emerald-400 dark:hover:border-emerald-300";
-      textColor = "text-emerald-900";
-      darkBorderColor = "dark:border-emerald-500";
-      darkTextColor = "dark:text-white";
-      buttonColor =
-        "dark:bg-emerald-800 bg-emerald-800 hover:bg-emerald-900 dark:hover:bg-emerald-700";
-      break;
-    case "purple":
-      borderColor = "border-purple-800";
-      borderColorHover = "hover:border-purple-400 dark:hover:border-purple-300";
-      textColor = "text-purple-900";
-      darkBorderColor = "dark:border-purple-500";
-      darkTextColor = "dark:text-white";
-      buttonColor =
-        "dark:bg-purple-800 bg-purple-700 hover:bg-purple-800 dark:hover:bg-purple-700";
-      break;
-    default:
-      break;
-  }
-  const route = useRouter();
+  const total = useMemo(() => {
+    let sum = BASE_PRICE;
+    selectedIds.forEach((id) => {
+      const opt = pricingOptions.find((o) => o.id === id);
+      if (opt) sum += opt.price;
+    });
+    return sum;
+  }, [selectedIds]);
 
-  const [formaPago, setFormaPago] = useState("mensual");
+  const totalOneTime = total;
 
-  // Función para manejar el cambio en la forma de pago
-  const handleFormaPagoChange = (event) => {
-    const nuevaFormaPago = event.target.value;
-    setFormaPago(nuevaFormaPago);
+  const paymentPlan = useMemo(() => {
+    if (totalOneTime <= 0) return null;
+    const initial = Math.max(
+      DOWN_PAYMENT_MIN,
+      Math.round((totalOneTime * DOWN_PAYMENT_PERCENT) / 100)
+    );
+    const remaining = totalOneTime - initial;
+    if (remaining <= 0) return null;
+    const monthly = Math.ceil(remaining / INSTALLMENT_MONTHS);
+    return { initial, monthly, months: INSTALLMENT_MONTHS };
+  }, [totalOneTime]);
+
+  const paymentPlanStrings = useMemo(() => ({
+    title: (t as { paymentPlanTitle?: string }).paymentPlanTitle ?? "O paga en cuotas",
+    now: (t as { paymentPlanNow?: string }).paymentPlanNow ?? "ahora",
+    forMonths: (t as { paymentPlanFor?: string }).paymentPlanFor ?? "durante",
+    months: (t as { paymentPlanMonths?: string }).paymentPlanMonths ?? "meses",
+  }), [t]);
+
+  const selectedOptions = useMemo(
+    () => pricingOptions.filter((o) => selectedIds.has(o.id)),
+    [selectedIds]
+  );
+
+  const toggle = (id: string) => {
+    if (id === "seo-basico") return; // Siempre incluido, no se puede quitar
+    const opt = pricingOptions.find((o) => o.id === id);
+    setSelectedIds((prev) => {
+      const next = new Set(prev);
+      if (next.has(id)) {
+        next.delete(id);
+        return next;
+      }
+      if (opt?.group) {
+        pricingOptions
+          .filter((o) => o.group === opt.group && o.id !== id)
+          .forEach((o) => next.delete(o.id));
+      }
+      next.add(id);
+      // Catálogo administrable incluye base de datos
+      if (id === "catalogo-admin") next.add("base-datos");
+      return next;
+    });
   };
 
-  const handleClick = () => {
-    const message = `Hola, estoy interesado en el plan ${type}, ¿me brindas más información? ¡Gracias!`;
-    onDefaultMessageChange(message);
+  const getOptionLabel = (opt: PricingOption) =>
+    lang === "en" && "optionLabels" in t && typeof t.optionLabels === "object" && opt.id in t.optionLabels
+      ? (t.optionLabels as Record<string, string>)[opt.id]
+      : opt.label;
+  const getOptionDescription = (opt: PricingOption) =>
+    lang === "en" && "optionDescriptions" in t && typeof t.optionDescriptions === "object" && opt.id in t.optionDescriptions
+      ? (t.optionDescriptions as Record<string, string>)[opt.id]
+      : opt.description ?? "";
 
-    route.push("#contact");
+  const handleRequestQuote = () => {
+    const intro =
+      lang === "en"
+        ? "Hi, I'm interested in a quote with the following configuration:"
+        : "Hola, me interesa solicitar un presupuesto con la siguiente configuración:";
+    const contextLabel =
+      lang === "en" ? "Context / My project or business:" : "Contexto / Mi proyecto o negocio:";
+    const totalLine =
+      lang === "en"
+        ? "Estimated total: $" + total + ". Can we talk to refine details?"
+        : "Total estimado: $" + total + ". ¿Podemos conversar para afinar detalles?";
+    const baseLabel = lang === "en" ? "Base (website)" : "Base (sitio web)";
+    const contextBlock = projectContext.trim()
+      ? contextLabel + "\n" + projectContext.trim()
+      : "";
+    const lines = [
+      intro,
+      "",
+      ...(contextBlock ? [contextBlock, ""] : []),
+      ...(BASE_PRICE > 0 ? ["• " + baseLabel + ": $" + BASE_PRICE] : []),
+      ...selectedOptions.map((o) =>
+        "• " + getOptionLabel(o) + ": +$" + o.price
+      ),
+      "",
+      totalLine,
+    ];
+    const message = lines.join("\n");
+    onDefaultMessageChange?.(message);
+    router.push("#contact");
+    setTimeout(() => {
+      document.getElementById("contact")?.scrollIntoView({ behavior: "smooth" });
+    }, 100);
   };
 
-  const [showFeatures, setShowFeatures] = useState(false);
+  const byCategory = useMemo(() => {
+    const map = new Map<PricingOption["category"], PricingOption[]>();
+    pricingOptions.forEach((opt) => {
+      const list = map.get(opt.category) ?? [];
+      list.push(opt);
+      map.set(opt.category, list);
+    });
+    return map;
+  }, []);
 
-  const toggleFeatures = () => {
-    setShowFeatures(!showFeatures);
-  };
-
-
-  // Definir precios y mensualidades por tipo de tarjeta
-  const preciosPorTarjeta = {
-    PLATA: {
-      mensual: { price: 100, mensualidad: 30 }, // total 460 
-      contado: { price: 300, mensualidad: 0 }, // total 300
-      mixto: { price: 180, mensualidad: 20 }, // total 360
-    },
-    ORO: {
-      mensual: { price: 150, mensualidad: 50 }, // total 750
-      contado: { price: 500, mensualidad: 0 }, // total 500
-      mixto: { price: 300, mensualidad: 30 }, // total 660 
-    },
-    ESMERALDA: {
-      mensual: { price: 500, mensualidad: 250 }, // total 3500
-      contado: { price: 2500, mensualidad: 0 }, // total 2500
-      mixto: { price: 800, mensualidad: 200 }, // total 3000
-    },
-    DIAMANTE: {
-      mensual: { price: 1000, mensualidad: 500 }, // total 7000
-      contado: { price: 5000, mensualidad: 0 }, // total 5000
-      mixto: { price: 1800, mensualidad: 400 }, // total 6600
-    },
-  };
-
-    // Obtener los precios y mensualidades según la forma de pago seleccionada
-    const { price, mensualidad } = preciosPorTarjeta[type][formaPago];
-
+  const categories: PricingOption["category"][] = [
+    "pagina",
+    "dominio",
+    "extras",
+  ];
 
   return (
-    <div className={`p-4 xl:w-1/4 md:w-1/2 w-full `} >
+    <section
+      id="prices"
+      className="relative flex flex-col items-center bg-white py-20 text-black dark:bg-[#0f0f11] dark:text-white md:py-24 lg:py-32"
+    >
       <div
-        className={`h-full p-6 rounded-lg border-2 ${borderColor} ${borderColorHover} ${darkBorderColor} flex flex-col overflow-hidden shadow-three hover:shadow-one dark:bg-gray-dark dark:shadow-two dark:hover:shadow-gray-dark relative z-10 rounded-xs bg-white px-8 py-10`}
-      >
-        {isPopular && (
-          <span className="bg-green-500 text-white px-3 py-1 tracking-widest text-xs absolute right-0 top-0 rounded-bl">
-            POPULAR
-          </span>
-        )}
-        <h2
-          className={`text-xl tracking-widest title-font mb-1 font-medium ${textColor} ${darkTextColor} `}
-        >
-          {type}
-        </h2>
-
-            {
-            type == 'PLATA' && 
-            <small className="dark:text-gray-400">
-                        Este paquete es especial para emprendimietos que estan surgiendo, buscan expandir su negocio y generar credibilidad.
-                    </small>
-            }
-            {
-            type == 'ORO' && 
-            <small className="dark:text-gray-400">
-                        Este paquete es especial para emprendimietos que estan surgiendo, con mayores ventas mes a mes, y que buscan dar mas credibilidad a su negocio.
-                    </small>
-            }
-            {
-            type == 'ESMERALDA' && 
-            <small className="dark:text-gray-400">
-                        Este paquete es especial para emprendimientos/empresas mas consolidadas que buscan brindar una mejor atencion al cliente asi como una forma más atractiva de promocionar sus productos.
-                    </small>
-            }
-            {
-            type == 'DIAMANTE' && 
-            <small className="dark:text-gray-400">
-                        Este paquete es especial para empresas ya consolidadas, con ingresos altos que desean automatizar procesos dentro y fuera de la empresa y así brindar un mejor servicio para competir en el mercado actual.
-                    </small>
-            } 
-
-
-        {/* Agregar la selección de forma de pago con botones de radio */}
-        <small className="mb-3  text-gray-900 dark:text-white mt-3">Formas de Pago</small>
-        <ul className="grid w-full gap-6 grid-cols-3 mb-3 ">
-
-        <li>
-            <input type="radio" id={`contado-${type}`} name={`formaPago-${type}`} value="contado" className="hidden peer" checked={formaPago === "contado"} onChange={handleFormaPagoChange} />
-            <label htmlFor={`contado-${type}`} className="inline-flex items-center justify-between w-full p-2 text-gray-500 bg-transparent border border-gray-700 rounded-lg cursor-pointer dark:hover:text-gray-300 dark:peer-checked:text-gray-300 peer-checked:border-blue-600 peer-checked:text-gray-200 peer-checked:bg-blue-800 hover:text-gray-600 hover:bg-gray-400 dark:text-gray-400 dark:bg-transparent dark:hover:bg-gray-800">                           
-              <div className="w-full flex">
-                <div className="w-full text-base font-semibold xs:text-xs text-center">Contado</div>
-                {/* <div className="w-full text-xs">Pago único</div> */}
-              </div>
-            </label>
-          </li>
-
-          <li>
-            <input type="radio" id={`mensual-${type}`} name={`formaPago-${type}`} value="mensual" className="hidden peer" checked={formaPago === "mensual"} onChange={handleFormaPagoChange} />
-            <label htmlFor={`mensual-${type}`} className="inline-flex items-center justify-between w-full p-2 text-gray-500 bg-transparent border border-gray-700 rounded-lg cursor-pointer dark:hover:text-gray-300 dark:peer-checked:text-gray-300 peer-checked:border-blue-600 peer-checked:text-gray-200 peer-checked:bg-blue-800 hover:bg-gray-400 dark:text-gray-400 dark:bg-transparent dark:hover:bg-gray-800">                           
-              <div className="w-full flex">
-                <div className="w-full text-base font-semibold xs:text-xs text-center">Mensual</div>
-                {/* <div className="w-full text-xs">Pago mensual</div> */}
-              </div>
-            </label>
-          </li>
-          
-          <li>
-            <input type="radio" id={`mixto-${type}`} name={`formaPago-${type}`} value="mixto" className="hidden peer" checked={formaPago === "mixto"} onChange={handleFormaPagoChange} />
-            <label htmlFor={`mixto-${type}`} className="inline-flex items-center justify-between w-full p-2 text-gray-500 bg-transparent border border-gray-700 rounded-lg cursor-pointer dark:hover:text-gray-300 dark:peer-checked:text-gray-300 peer-checked:border-blue-600 peer-checked:text-gray-200 peer-checked:bg-blue-800 hover:text-gray-600 hover:bg-gray-400 dark:text-gray-400 dark:bg-transparent dark:hover:bg-gray-800">
-              <div className="w-full flex">
-                <div className="w-full text-base font-semibold xs:text-xs text-center">Mixto</div>
-                {/* <div className="w-full text-xs">Pago mixto</div> */}
-              </div>
-            </label>
-          </li>
-        </ul>
-
-
-        <h1
-          className={`text-5xl ${darkTextColor} ${textColor} leading-none flex items-center pb-1 mb-1`}
-        >
-          <span
-          className={`text-sm ml-1 font-normal text-gray-500`}
-        >
-          Pago inicial:
-        </span>
-
-          <span className={'ml-4'}>${price}</span>
-        </h1>
-
-        {/* <span
-          className={`text-lg ml-1 font-normal text-gray-500 border-b ${darkBorderColor} ${borderColor}  w-full pb-2 mb-2`}
-        >
-          <span
-            className={`text-sm ml-1 font-normal text-gray-500`}
-          >
-            Pago mensual:
-          </span>
-
-          ${mensualidad}
-        </span> */}
-
-        <h1
-          className={`text-lg ml-1 font-normal text-gray-500 border-b ${darkBorderColor} ${borderColor}  w-full pb-2 mb-2`}
-        >
-          <span
-          className={`text-sm ml-1 font-normal text-gray-500`}
-        >
-          Pago mensual:
-        </span>
-
-          <span className={'ml-4'}>${mensualidad}</span>
-        </h1>
-
-        {showFeatures ? (
-          <div>
-            {features.map((feature, index) => (
-              <div key={index}>
-                <p
-                  key={index}
-                  className={`flex items-center ${darkTextColor} text-gray-900 mb-2`}
-                >
-                  <span
-                    className={`w-6 h-6 mr-2 inline-flex items-center justify-center ${
-                      feature.isIncluded ? "bg-green-500" : "bg-red-500"
-                    } text-white rounded-full flex-shrink-0`}
-                  >
-                    {feature.isIncluded ? (
-                      <svg
-                        fill="none"
-                        stroke="green"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth="2.5"
-                        className="w-5 h-5"
-                        viewBox="0 0 24 24"
-                      >
-                        <path d="M20 6L9 17l-5-5"></path>
-                      </svg>
-                    ) : (
-                      <svg
-                        fill="none"
-                        stroke="red"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth="2.5"
-                        className="w-5 h-5"
-                        viewBox="0 0 24 24"
-                      >
-                        <path d="M6 18L18 6M6 6l12 12"></path>{" "}
-                      </svg>
-                    )}
-                  </span>
-                  <span>{feature.title}</span>
-                </p>
-                <li className={`text-xs ${darkTextColor} text-gray-800 mb-2 `}>
-                  <span
-                    className={`text-xs ${darkTextColor} text-gray-800 mb-2 `}
-                  >
-                    {feature.description}
-                  </span>
-                </li>
-              </div>
-            ))}
-          </div>
-        ) : (
-          <div>
-            {features.map((feature, index) => (
-              <p
-                key={index}
-                className={`flex items-center ${darkTextColor} text-gray-900 mb-2`}
-              >
-                <span
-                  className={`w-6 h-6 mr-2 inline-flex items-center justify-center ${
-                    feature.isIncluded ? "bg-green-500" : "bg-red-500"
-                  } text-white rounded-full flex-shrink-0`}
-                >
-                  {feature.isIncluded ? (
-                    <svg
-                      fill="none"
-                      stroke="green"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth="2.5"
-                      className="w-5 h-5"
-                      viewBox="0 0 24 24"
-                    >
-                      <path d="M20 6L9 17l-5-5"></path>
-                    </svg>
-                  ) : (
-                    <svg
-                      fill="none"
-                      stroke="red"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth="2.5"
-                      className="w-5 h-5"
-                      viewBox="0 0 24 24"
-                    >
-                      <path d="M6 18L18 6M6 6l12 12"></path>{" "}
-                    </svg>
-                  )}
+        className="bg-dot-grid absolute inset-0 z-0 opacity-60 dark:opacity-25"
+        aria-hidden
+      />
+      <div className="container relative z-10 mx-auto px-5 py-12">
+        <div className="relative mb-12 flex w-full flex-col text-center md:mb-16">
+          {(t as { promoLabel?: string }).promoLabel && (
+            <div
+              className="absolute -top-0.5 right-0 flex origin-top-right sm:right-2 md:right-4"
+              style={{ transform: "rotate(6deg)" }}
+            >
+              <div className="relative overflow-hidden rounded-sm bg-red-600 px-4 py-2 shadow-lg ring-2 ring-red-700/50 dark:bg-red-600 dark:ring-red-500/50 md:px-5 md:py-2.5">
+                <div
+                  className="pointer-events-none absolute inset-0 opacity-20"
+                  style={{
+                    background: "repeating-linear-gradient(-45deg, transparent, transparent 4px, white 4px, white 6px)",
+                  }}
+                />
+                <span className="relative text-xs font-black uppercase tracking-widest text-white drop-shadow-sm md:text-sm">
+                  {(t as { promoLabel?: string }).promoLabel}
                 </span>
-                <span>{feature.title}</span>
-              </p>
-            ))}
-          </div>
-        )}
-
-        <button
-          className={`text-sm text-blue-500 mt-3 mb-3 cursor-pointer focus:outline-none`}
-          onClick={toggleFeatures}
-        >
-          {showFeatures ? "Ocultar descripciones" : "Mostrar descripciones"}
-        </button>
-
-        <button
-          onClick={handleClick}
-          className={`flex items-center mt-auto text-white ${darkTextColor}  ${buttonColor}  border-0 py-2 px-4 w-full focus:outline-none  rounded`}
-        >
-          Me interesa. ¡Contactar!
-          <svg
-            fill="none"
-            stroke="currentColor"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            strokeWidth="2"
-            className="w-4 h-4 ml-auto transform rotate-90"
-            viewBox="0 0 24 24"
-          >
-            <path d="M5 12h14M12 5l7 7-7 7"></path>
-          </svg>
-        </button>
-        <p className={`text-xs text-gray-800 ${darkTextColor} mt-3`}>
-          El precio anterior ($
-          <b>{price}</b>) es la base y puede variar dependiendo de sus necesidades,
-          es decir, agregar más funcionalidades hará que el precio aumente.
-        </p>
-
-
-
-<div className="absolute right-30 bottom-60 z-[-1]">
-          <svg
-            width="179"
-            height="158"
-            viewBox="0 0 179 158"
-            fill="none"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <path
-              opacity="0.5"
-              d="M75.0002 63.256C115.229 82.3657 136.011 137.496 141.374 162.673C150.063 203.47 207.217 197.755 202.419 167.738C195.393 123.781 137.273 90.3579 75.0002 63.256Z"
-              fill="url(#paint0_linear_70:153)"
-            />
-            <path
-              opacity="0.3"
-              d="M178.255 0.150879C129.388 56.5969 134.648 155.224 143.387 197.482C157.547 265.958 65.9705 295.709 53.1024 246.401C34.2588 174.197 100.939 83.7223 178.255 0.150879Z"
-              fill="url(#paint1_linear_70:153)"
-            />
-            <defs>
-              <linearGradient
-                id="paint0_linear_70:153"
-                x1="69.6694"
-                y1="29.9033"
-                x2="196.108"
-                y2="83.2919"
-                gradientUnits="userSpaceOnUse"
-              >
-                <stop stopColor="#4584a8" stopOpacity="0.62" />
-                <stop offset="1" stopColor="#4584a8" stopOpacity="0" />
-              </linearGradient>
-              <linearGradient
-                id="paint1_linear_70:153"
-                x1="165.348"
-                y1="-75.4466"
-                x2="-3.75136"
-                y2="103.645"
-                gradientUnits="userSpaceOnUse"
-              >
-                <stop stopColor="#4584a8" stopOpacity="0.62" />
-                <stop offset="1" stopColor="#4584a8" stopOpacity="0" />
-              </linearGradient>
-            </defs>
-          </svg>
+              </div>
+            </div>
+          )}
+          <h2 className="font-display text-3xl font-normal tracking-tight text-black dark:text-white md:text-4xl">
+            {t.title}
+          </h2>
+          <p className="mx-auto mt-4 max-w-2xl text-base leading-relaxed text-body-color dark:text-body-color-dark md:text-lg">
+            {t.paragraph}
+          </p>
         </div>
 
-
-<div className="absolute right-60 top-0 z-[-1]">
-          <svg
-            width="179"
-            height="158"
-            viewBox="0 0 179 158"
-            fill="none"
-            xmlns="http://www.w3.org/2000/svg"
+        <div className="mx-auto mb-10 max-w-5xl">
+          <label
+            htmlFor="project-context"
+            className="mb-2 block text-left text-sm font-medium text-black dark:text-white"
           >
-            <path
-              opacity="0.5"
-              d="M75.0002 63.256C115.229 82.3657 136.011 137.496 141.374 162.673C150.063 203.47 207.217 197.755 202.419 167.738C195.393 123.781 137.273 90.3579 75.0002 63.256Z"
-              fill="url(#paint0_linear_70:153)"
-            />
-            <path
-              opacity="0.3"
-              d="M178.255 0.150879C129.388 56.5969 134.648 155.224 143.387 197.482C157.547 265.958 65.9705 295.709 53.1024 246.401C34.2588 174.197 100.939 83.7223 178.255 0.150879Z"
-              fill="url(#paint1_linear_70:153)"
-            />
-            <defs>
-              <linearGradient
-                id="paint0_linear_70:153"
-                x1="69.6694"
-                y1="29.9033"
-                x2="196.108"
-                y2="83.2919"
-                gradientUnits="userSpaceOnUse"
+            {t.contextLabel}
+          </label>
+          <textarea
+            id="project-context"
+            value={projectContext}
+            onChange={(e) => setProjectContext(e.target.value)}
+            placeholder={t.contextPlaceholder}
+            rows={3}
+            className="w-full resize-none rounded-xl border border-stroke-stroke bg-white px-4 py-3 text-[15px] text-body-color placeholder:text-body-color/60 outline-none transition-colors focus:border-primary focus:ring-2 focus:ring-primary/20 dark:border-stroke-dark dark:bg-[#0c0c0d] dark:text-body-color-dark dark:placeholder:text-body-color-dark/60 dark:focus:border-primary"
+          />
+        </div>
+
+        <div className="mx-auto flex max-w-5xl flex-col gap-10 lg:flex-row lg:gap-12">
+          {/* Opciones por categoría */}
+          <div className="flex-1 space-y-8">
+            {categories.map((cat) => {
+              const options = byCategory.get(cat) ?? [];
+              if (options.length === 0) return null;
+              return (
+                <div
+                  key={cat}
+                  className="rounded-2xl border border-stroke-stroke/60 bg-white/80 p-6 dark:border-stroke-dark/60 dark:bg-[#0c0c0d]/80"
+                >
+                  <h3 className="mb-4 text-sm font-semibold uppercase tracking-wider text-primary dark:text-primary-light">
+                    {categoryLabelsTranslated[cat]}
+                  </h3>
+                  <ul className="space-y-2">
+                    {options.map((opt) => {
+                      const isSelected = selectedIds.has(opt.id);
+                      const isLocked = opt.id === "seo-basico";
+                      return (
+                        <li key={opt.id}>
+                          <label
+                            className={`flex flex-col gap-0.5 rounded-xl border border-transparent py-3 px-4 transition-colors sm:flex-row sm:items-center sm:justify-between sm:gap-4 ${
+                              isLocked
+                                ? "cursor-default opacity-100"
+                                : "cursor-pointer hover:bg-primary/5 dark:hover:bg-primary/10"
+                            } has-[:checked]:border-primary/30 has-[:checked]:bg-primary/10 dark:has-[:checked]:bg-primary/15`}
+                          >
+                            <span className="flex items-start gap-3 sm:items-center">
+                              <input
+                                type="checkbox"
+                                checked={isSelected}
+                                disabled={isLocked}
+                                onChange={() => toggle(opt.id)}
+                                className="mt-0.5 h-4 w-4 shrink-0 rounded border-stroke-stroke text-primary focus:ring-primary dark:border-stroke-dark sm:mt-0 disabled:cursor-default"
+                              />
+                              <span className="flex flex-col gap-0.5">
+                                <span className="text-sm font-medium text-black dark:text-white">
+                                  {getOptionLabel(opt)}
+                                </span>
+                                {(getOptionDescription(opt) || opt.description) && (
+                                  <span className="text-xs leading-snug text-body-color dark:text-body-color-dark">
+                                    {getOptionDescription(opt) || opt.description}
+                                  </span>
+                                )}
+                              </span>
+                            </span>
+                            <span className="shrink-0 pl-7 text-sm font-semibold tabular-nums text-primary dark:text-primary-light sm:pl-0">
+                              +${opt.price}
+                            </span>
+                          </label>
+                        </li>
+                      );
+                    })}
+                  </ul>
+                </div>
+              );
+            })}
+          </div>
+
+          {/* Resumen y total */}
+          <div className="lg:w-[280px] lg:shrink-0">
+            <div className="sticky top-24 rounded-2xl border border-stroke-stroke/60 bg-white p-6 shadow-one dark:border-stroke-dark/60 dark:bg-[#0c0c0d] dark:shadow-two">
+              <h3 className="mb-4 text-sm font-semibold uppercase tracking-wider text-body-color dark:text-body-color-dark">
+                {t.yourSelection}
+              </h3>
+              {selectedOptions.length === 0 && BASE_PRICE === 0 ? (
+                <p className="text-sm text-body-color dark:text-body-color-dark">
+                  {t.chooseOptions}
+                </p>
+              ) : (
+                <ul className="mb-4 space-y-2 text-sm">
+                  {BASE_PRICE > 0 && (
+                    <li className="flex justify-between gap-2 text-black dark:text-white">
+                      <span className="truncate">{t.baseLabel}</span>
+                      <span className="tabular-nums text-primary dark:text-primary-light">
+                        ${BASE_PRICE}
+                      </span>
+                    </li>
+                  )}
+                  {selectedOptions.map((opt) => (
+                    <li
+                      key={opt.id}
+                      className="flex justify-between gap-2 text-black dark:text-white"
+                    >
+                      <span className="truncate">{getOptionLabel(opt)}</span>
+                      <span className="tabular-nums text-primary dark:text-primary-light">
+                        +${opt.price}
+                      </span>
+                    </li>
+                  ))}
+                </ul>
+              )}
+              <div className="border-t border-stroke-stroke pt-4 dark:border-stroke-dark">
+                <div className="flex items-baseline justify-between gap-2">
+                  <span className="text-sm font-medium text-body-color dark:text-body-color-dark">
+                    {t.totalEstimate}
+                  </span>
+                  <span className="font-display text-2xl font-normal tabular-nums text-black dark:text-white">
+                    ${total}
+                  </span>
+                </div>
+              </div>
+              {paymentPlan && (
+                <div className="mt-4 rounded-xl border border-primary/20 bg-primary/5 py-3 px-4 dark:border-primary/30 dark:bg-primary/10">
+                  <p className="text-xs font-semibold uppercase tracking-wider text-primary dark:text-primary-light">
+                    {paymentPlanStrings.title}
+                  </p>
+                  <p className="mt-1 text-sm text-black dark:text-white">
+                    ${paymentPlan.initial} {paymentPlanStrings.now} + ${paymentPlan.monthly}
+                    {(t as { perMonth?: string }).perMonth ?? "/mes"} {paymentPlanStrings.forMonths} {paymentPlan.months} {paymentPlanStrings.months}
+                  </p>
+                </div>
+              )}
+              <button
+                type="button"
+                onClick={handleRequestQuote}
+                className="mt-6 flex w-full items-center justify-center gap-2 rounded-2xl bg-primary py-3 px-4 text-sm font-medium text-white shadow-btn transition-all hover:bg-primary-light hover:shadow-btn-hover focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
               >
-                <stop stopColor="#4584a8" stopOpacity="0.62" />
-                <stop offset="1" stopColor="#4584a8" stopOpacity="0" />
-              </linearGradient>
-              <linearGradient
-                id="paint1_linear_70:153"
-                x1="165.348"
-                y1="-75.4466"
-                x2="-3.75136"
-                y2="103.645"
-                gradientUnits="userSpaceOnUse"
-              >
-                <stop stopColor="#4584a8" stopOpacity="0.62" />
-                <stop offset="1" stopColor="#4584a8" stopOpacity="0" />
-              </linearGradient>
-            </defs>
-          </svg>
+                {t.requestQuote}
+                <svg
+                  className="h-4 w-4"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M17 8l4 4m0 0l-4 4m4-4H3"
+                  />
+                </svg>
+              </button>
+              <p className="mt-3 text-center text-xs text-body-color dark:text-body-color-dark">
+                {t.redirectNote}
+              </p>
+            </div>
+          </div>
+        </div>
+
+        {/* Nota costos operativos */}
+        <div className="mx-auto mt-12 max-w-5xl rounded-xl border border-amber-200/80 bg-amber-50/80 px-4 py-3 dark:border-amber-800/50 dark:bg-amber-950/30">
+          <p className="text-left text-sm text-amber-900 dark:text-amber-200">
+            {t.operationalNote}
+          </p>
         </div>
       </div>
-
-
-
-    </div>
+    </section>
   );
 };
-
-// export default PriceCard;
-
-
-
-const Prices = ({ onDefaultMessageChange }) => (
-  <section id="prices" className="flex justify-center items-center h-full flex-col text-black">
-    <div className="container px-5 py-24 mx-auto">
-      <div className="flex flex-col text-center w-full mb-20">
-        <h1 className="text-3xl md:text-5xl font-bold dark:text-gray-200">
-          Planes y Precios
-        </h1>
-        <p className="lg:w-2/3 mx-auto leading-relaxed text-base md:text-lg text-gray-700 mt-4 dark:text-white">
-          Selecciona el plan que mejor se adapte a las necesidades de tu negocio. Todos nuestros planes son personalizables y podemos ajustarlos según tus requerimientos específicos.
-        </p>
-        <div className="flex mt-6 justify-center">
-          <div className="w-16 h-1 rounded-full bg-primary inline-flex"></div>
-        </div>
-      </div>
-      <div className="flex flex-wrap -m-4">
-        <PriceCard
-          onDefaultMessageChange={onDefaultMessageChange}
-          color={"gray"}
-          type="PLATA"
-        //   price="60"
-        //   mensualidad="30"
-          features={[
-            {
-              title: "Página web con 4 secciones",
-              isIncluded: true,
-              description:
-                "Diseñamos y desarrollamos una página web con hasta 4 secciones, adaptada a tus necesidades.",
-            },
-            {
-              title: "Colores y diseño a elegir",
-              isIncluded: true,
-              description:
-                "Personalizamos los colores y el diseño de la página según tus preferencias y estilo de marca.",
-            },
-            {
-              title: "Formulario de contacto",
-              isIncluded: true,
-              description:
-                "Incluimos un formulario de contacto para que tus visitantes puedan enviarte mensajes fácilmente.",
-            },
-            {
-              title: "Hosting/Dominio",
-              isIncluded: true,
-              description:
-                "Se incluye un hosting y un dominio gratuito (no personalizable)",
-            },
-          ]}
-          noIncluye={[
-            "Base de datos",
-            "Mantenimiento general",
-            "Tema claro/oscuro",
-          ]}
-        />
-        <PriceCard
-          onDefaultMessageChange={onDefaultMessageChange}
-          color={"yellow"}
-          type="ORO"
-        //   price="100"
-        //   mensualidad="60"
-          features={[
-            {
-              title: "Página web con 5 secciones",
-              isIncluded: true,
-              description:
-                "Diseñamos y desarrollamos una página web con hasta 5 secciones, brindándote más espacio para contenido.",
-            },
-            {
-              title: "Colores y diseño a elegir",
-              isIncluded: true,
-              description:
-                "Personalizamos los colores y el diseño de la página según tus preferencias y estilo de marca.",
-            },
-            {
-              title: "Formulario de contacto",
-              isIncluded: true,
-              description:
-                "Incluimos un formulario de contacto para que tus visitantes puedan enviarte mensajes fácilmente.",
-            },
-            {
-              title: "Tema claro/oscuro",
-              isIncluded: true,
-              description:
-                "Ofrecemos la opción de elegir entre un tema claro y oscuro, para adaptarse a tus preferencias de visualización.",
-            },
-            {
-              title: "Hosting/Dominio",
-              isIncluded: true,
-              description:
-                "Se incluye un hosting y un dominio gratuito (no personalizable)",
-            },
-            {
-              title: "Mantenimiento general",
-              isIncluded: true,
-              description:
-                "Proporcionamos mantenimiento regular para garantizar un rendimiento óptimo de tu sitio web.",
-            },
-          ]}
-          isPopular={true}
-          noIncluye={["Base de datos"]}
-        />
-        <PriceCard
-          onDefaultMessageChange={onDefaultMessageChange}
-          color={"emerald"}
-          type="ESMERALDA"
-        //   price="200"
-        //   mensualidad="120"
-          features={[
-            {
-              title: "Página web con máx. 10 secciones",
-              isIncluded: true,
-              description:
-                "Diseñamos y desarrollamos una página web con hasta 10 secciones, brindándote flexibilidad y espacio para tu contenido.",
-            },
-            {
-              title: "Colores y diseño a elegir",
-              isIncluded: true,
-              description:
-                "Personalizamos los colores y el diseño de la página según tus preferencias y estilo de marca.",
-            },
-            {
-              title: "Formulario de contacto",
-              isIncluded: true,
-              description:
-                "Incluimos un formulario de contacto para que tus visitantes puedan enviarte mensajes fácilmente.",
-            },
-            {
-              title: "Tema claro/oscuro",
-              isIncluded: true,
-              description:
-                "Ofrecemos la opción de elegir entre un tema claro y oscuro, para adaptarse a tus preferencias de visualización.",
-            },
-            {
-              title: "Hosting/Dominio",
-              isIncluded: true,
-              description:
-                "Se incluye un hosting y un dominio gratuito (no personalizable)",
-            },
-            {
-              title: "Mantenimiento general",
-              isIncluded: true,
-              description:
-                "Proporcionamos mantenimiento regular para garantizar un rendimiento óptimo de tu sitio web.",
-            },
-            {
-              title: "Base de datos",
-              isIncluded: true,
-              description:
-                "Incorporamos una base de datos para almacenar y gestionar datos, brindándote más funcionalidades.",
-            },
-            {
-              title: "Incluye carrito de compra por WhatsApp",
-              isIncluded: true,
-              description:
-                "Facilitamos las ventas a través de WhatsApp con un carrito de compra integrado para tus productos o servicios.",
-            },
-            {
-              title: "Catálogo Administrable",
-              isIncluded: true,
-              description:
-                "Proporcionamos un catálogo administrable para facilitar la gestión de tus productos o servicios.",
-            },
-          ]}
-          noIncluye={["Pagos en línea"]}
-        />
-        <PriceCard
-          onDefaultMessageChange={onDefaultMessageChange}
-          color={"purple"}
-          type="DIAMANTE"
-        //   price="800"
-        //   mensualidad="500"
-          features={[
-            {
-              title: "Personalizada al gusto y necesidades del cliente",
-              isIncluded: true,
-              description:
-                "Diseñamos y desarrollamos completamente a medida, adaptándonos a tus gustos y necesidades específicas.",
-            },
-            {
-              title: "Dirigido a empresas que quieran digitalizar procesos",
-              isIncluded: true,
-              description:
-                "Orientado a empresas que buscan digitalizar y optimizar sus procesos comerciales mediante soluciones web.",
-            },
-            {
-              title: "Reuniones continuas para evaluar requerimientos",
-              isIncluded: true,
-              description:
-                "Mantenemos reuniones continuas para evaluar y ajustar los requisitos del proyecto, asegurándonos de satisfacer tus expectativas.",
-            },
-            {
-              title: "Progreso/mantenimientos constantes y documentados",
-              isIncluded: true,
-              description:
-                "Realizamos un seguimiento constante del progreso del proyecto y documentamos detalladamente todos los mantenimientos realizados.",
-            },
-            {
-              title: "Hosting/Dominio",
-              isIncluded: true,
-              description:
-                "Se incluye un hosting y un dominio gratuito (no personalizable)",
-            },
-            {
-              title: "Se inicia con el proyecto desde cero",
-              isIncluded: true,
-              description:
-                "Iniciamos el proyecto desde la etapa inicial de planificación y diseño, asegurándonos de construir una solución a medida desde cero.",
-            },
-          ]}
-          noIncluye={[]}
-        />
-      </div>
-    </div>
-  </section>
-);
 
 export default Prices;

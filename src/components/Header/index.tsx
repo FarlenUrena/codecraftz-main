@@ -4,7 +4,9 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 import ThemeToggler from "./ThemeToggler";
+import LanguageToggler from "./LanguageToggler";
 import menuData from "./menuData";
+import { useLanguage } from "@/contexts/LanguageContext";
 
 const Header = () => {
   // Navbar toggle
@@ -37,13 +39,22 @@ const Header = () => {
   };
 
   const usePathName = usePathname();
+  const { lang } = useLanguage();
+
+  const menuLabels: Record<number, { es: string; en: string }> = {
+    1: { es: "Home", en: "Home" },
+    2: { es: "Servicios", en: "Services" },
+    3: { es: "Proyectos", en: "Projects" },
+    4: { es: "Precios", en: "Pricing" },
+    5: { es: "Contacto", en: "Contact" },
+  };
 
   return (
     <>
       <header
         className={`header top-0 left-0 z-40 flex w-full items-center ${
           sticky
-            ? "dark:bg-gray-dark dark:shadow-sticky-dark shadow-sticky fixed z-9999 bg-white/80 backdrop-blur-xs transition"
+            ? "fixed z-[9999] bg-white/90 shadow-sticky backdrop-blur-md transition dark:bg-[#0c0c0d]/90 dark:shadow-sticky-dark"
             : "absolute bg-transparent"
         }`}
       >
@@ -116,7 +127,7 @@ const Header = () => {
                                 : "text-dark hover:text-primary dark:text-white/70 dark:hover:text-white"
                             }`}
                           >
-                            {menuItem.title}
+                            {menuLabels[menuItem.id]?.[lang] ?? menuItem.title}
                           </Link>
                         ) : (
                           <>
@@ -167,12 +178,15 @@ const Header = () => {
                 </Link> */}
                 <Link
                   href="#contact"
-                  className="ease-in-up shadow-btn hover:shadow-btn-hover bg-primary hover:bg-primary/90 hidden rounded-md px-8 py-3 text-base font-medium text-white transition duration-300 md:block md:px-9 lg:px-6 xl:px-9"
+                  className="hidden rounded-2xl bg-primary px-6 py-2.5 text-sm font-medium text-white shadow-btn transition-all duration-200 hover:bg-primary-light hover:shadow-btn-hover md:block"
                 >
-                  Contact
+                  {lang === "es" ? "Contacto" : "Contact"}
                 </Link>
-                <div>
-                  <ThemeToggler />
+                <div className="flex items-center">
+                  <LanguageToggler />
+                  <div className="ml-2">
+                    <ThemeToggler />
+                  </div>
                 </div>
               </div>
             </div>

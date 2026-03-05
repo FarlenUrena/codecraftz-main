@@ -2,13 +2,13 @@ import React from "react";
 
 export default function LogoText() {
   return (
-    <div className="flex items-center justify-center text-center flex-col">
-      <h1 className="text-7xl md:text-8xl font-serif dark:text-gray-200">
+    <div className="flex flex-col items-center justify-center text-center">
+      <span className="font-display text-5xl tracking-tight text-black dark:text-white md:text-6xl">
         CODE
-      </h1>
-      <h1 className="text-7xl md:text-8xl font-serif dark:text-gray-200">
+      </span>
+      <span className="font-display text-5xl tracking-tight text-black dark:text-white md:text-6xl">
         CRAFTZ
-      </h1>
+      </span>
     </div>
   );
 }

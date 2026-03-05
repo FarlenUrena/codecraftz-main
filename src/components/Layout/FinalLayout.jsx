@@ -5,6 +5,7 @@ import Contact from "@/components/Contact";
 import Features from "@/components/Features";
 import Hero from "@/components/Hero";
 import Prices from "@/components/Prices/Prices";
+import Projects from "@/components/Projects";
 import { useState } from "react";
 
 export default function FinalLayout() {
@@ -28,11 +29,9 @@ export default function FinalLayout() {
       <ScrollUp />
       <Hero />
       <Features />
-      <Prices
-        onDefaultMessageChange={handleDefaultMessageChange}
-        defaultMessage={defaultMessage}
-      ></Prices>
-      <Contact />
+      <Projects />
+      <Prices onDefaultMessageChange={handleDefaultMessageChange} />
+      <Contact defaultMessage={defaultMessage} />
     </>
   );
 }

@@ -1,9 +1,9 @@
 const SectionTitle = ({
   title,
   paragraph,
-  width = "570px",
+  width = "560px",
   center,
-  mb = "100px",
+  mb = "80px",
 }: {
   title: string;
   paragraph: string;
@@ -12,19 +12,20 @@ const SectionTitle = ({
   mb?: string;
 }) => {
   return (
-    <>
-      <div
-        className={`w-full ${center ? "mx-auto text-center" : ""}`}
-        style={{ maxWidth: width, marginBottom: mb }}
-      >
-        <h2 className="mb-4 text-3xl font-bold leading-tight! text-black dark:text-white sm:text-4xl md:text-[45px]">
-          {title}
-        </h2>
-        <p className="text-base leading-relaxed! text-body-color md:text-lg">
-          {paragraph}
-        </p>
-      </div>
-    </>
+    <div
+      className={`w-full ${center ? "mx-auto text-center" : ""}`}
+      style={{ maxWidth: width, marginBottom: mb }}
+    >
+      {center && (
+        <span className="mb-4 inline-block h-0.5 w-12 rounded-full bg-primary/60 dark:bg-primary/50" aria-hidden />
+      )}
+      <h2 className="font-display mb-4 text-3xl font-normal tracking-tight text-black dark:text-white sm:text-4xl md:text-[2.6rem]">
+        {title}
+      </h2>
+      <p className="text-base leading-relaxed text-body-color dark:text-body-color-dark md:text-lg">
+        {paragraph}
+      </p>
+    </div>
   );
 };
 

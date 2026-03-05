@@ -1,6 +1,3 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@100;200;300;400;500;600;700;800;900&display=swap')
-layer(base);
-
 @import 'tailwindcss';
 
 @custom-variant dark (&:is(.dark *));
@@ -17,17 +14,18 @@ layer(base);
   --color-current: currentColor;
   --color-transparent: transparent;
   --color-white: #ffffff;
-  --color-black: #121723;
+  --color-black: #1a1a1a;
   --color-dark: #1d2430;
-  --color-primary: #4584a8;
+  --color-primary: #3d6b85;
+  --color-primary-light: #5a8fa8;
   --color-yellow: #fbb040;
-  --color-bg-color-dark: #171c28;
+  --color-bg-color-dark: #0c0c0d;
 
-  --color-body-color: #788293;
-  --color-body-color-dark: #959cb1;
+  --color-body-color: #5c6370;
+  --color-body-color-dark: #a1a8b8;
 
-  --color-stroke-stroke: #e3e8ef;
-  --color-stroke-dark: #353943;
+  --color-stroke-stroke: #e8eaed;
+  --color-stroke-dark: #2a2d35;
 
   --color-gray-50: #f9fafb;
   --color-gray-100: #f3f4f6;
@@ -43,20 +41,22 @@ layer(base);
   --color-gray-dark: #1e232e;
   --color-gray-light: #f0f2f9;
 
-  --shadow-sign-up: 0px 5px 10px rgba(4, 10, 34, 0.2);
-  --shadow-one: 0px 2px 3px rgba(7, 7, 77, 0.05);
-  --shadow-two: 0px 5px 10px rgba(6, 8, 15, 0.1);
-  --shadow-three: 0px 5px 15px rgba(6, 8, 15, 0.05);
-  --shadow-sticky: inset 0 -1px 0 0 rgba(0, 0, 0, 0.1);
-  --shadow-sticky-dark: inset 0 -1px 0 0 rgba(255, 255, 255, 0.1);
-  --shadow-feature-2: 0px 10px 40px rgba(48, 86, 211, 0.12);
-  --shadow-submit: 0px 5px 20px rgba(4, 10, 34, 0.1);
-  --shadow-submit-dark: 0px 5px 20px rgba(4, 10, 34, 0.1);
-  --shadow-btn: 0px 1px 2px rgba(4, 10, 34, 0.15);
-  --shadow-btn-hover: 0px 1px 2px rgba(0, 0, 0, 0.15);
-  --shadow-btn-light: 0px 1px 2px rgba(0, 0, 0, 0.1);
+  --shadow-sign-up: 0 4px 14px rgba(0, 0, 0, 0.06);
+  --shadow-one: 0 1px 3px rgba(0, 0, 0, 0.04);
+  --shadow-two: 0 4px 12px rgba(0, 0, 0, 0.06);
+  --shadow-three: 0 2px 8px rgba(0, 0, 0, 0.04);
+  --shadow-sticky: 0 1px 0 0 rgba(0, 0, 0, 0.06);
+  --shadow-sticky-dark: 0 1px 0 0 rgba(255, 255, 255, 0.06);
+  --shadow-feature-2: 0 8px 30px rgba(61, 107, 133, 0.08);
+  --shadow-submit: 0 2px 8px rgba(61, 107, 133, 0.2);
+  --shadow-submit-dark: 0 2px 8px rgba(0, 0, 0, 0.2);
+  --shadow-btn: 0 1px 3px rgba(0, 0, 0, 0.08);
+  --shadow-btn-hover: 0 4px 12px rgba(61, 107, 133, 0.25);
+  --shadow-btn-light: 0 1px 2px rgba(0, 0, 0, 0.06);
 
-  --drop-shadow-three: 0px 5px 15px rgba(6, 8, 15, 0.05);
+  --drop-shadow-three: 0 4px 14px rgba(0, 0, 0, 0.05);
+  --radius-card: 1rem;
+  --radius-btn: 0.75rem;
 }
 
 @utility container {
@@ -124,8 +124,32 @@ layer(base);
 
 @layer base {
   body {
-    font-family: "Inter", sans-serif;
+    font-family: var(--font-sans), ui-sans-serif, system-ui, sans-serif;
   }
+  .font-display {
+    font-family: var(--font-serif), ui-serif, Georgia, serif;
+  }
+}
+
+/* Subtle dot grid for sections — adds depth without noise */
+.bg-dot-grid {
+  background-image: radial-gradient(circle at 1px 1px, rgba(61, 107, 133, 0.12) 1px, transparent 0);
+  background-size: 24px 24px;
+}
+.dark .bg-dot-grid {
+  background-image: radial-gradient(circle at 1px 1px, rgba(255, 255, 255, 0.06) 1px, transparent 0);
+}
+
+/* Soft gradient mesh for hero / CTA sections */
+.bg-gradient-mesh {
+  background-image:
+    radial-gradient(ellipse 80% 50% at 70% 20%, rgba(61, 107, 133, 0.12), transparent),
+    radial-gradient(ellipse 60% 40% at 20% 80%, rgba(61, 107, 133, 0.08), transparent);
+}
+.dark .bg-gradient-mesh {
+  background-image:
+    radial-gradient(ellipse 80% 50% at 70% 20%, rgba(61, 107, 133, 0.15), transparent),
+    radial-gradient(ellipse 60% 40% at 20% 80%, rgba(61, 107, 133, 0.08), transparent);
 }
 
 @layer components {

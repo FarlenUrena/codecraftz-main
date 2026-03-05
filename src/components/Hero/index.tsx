@@ -1,61 +1,117 @@
 import Link from "next/link";
 import Image from "next/image";
 import LogoText from "./LogoText";
+import { useLanguage } from "@/contexts/LanguageContext";
 
 const Hero = () => {
+  const { lang } = useLanguage();
+
+  const title =
+    lang === "en"
+      ? (
+          <>
+            We turn your ideas into{" "}
+            <span className="text-primary">successful digital solutions</span>
+          </>
+        )
+      : (
+          <>
+            Transformamos tus ideas en{" "}
+            <span className="text-primary">soluciones digitales</span> exitosas
+          </>
+        );
+
+  const subtitle =
+    lang === "en"
+      ? "We specialize in custom web development. From simple landing pages to complex platforms, we create digital experiences that grow your business."
+      : "Especialistas en desarrollo web y aplicaciones personalizadas. Desde sitios web informativos hasta plataformas complejas, creamos experiencias digitales que impulsan tu negocio.";
+
+  const primaryCta = lang === "en" ? "Start your project" : "Comienza tu proyecto";
+  const secondaryCta =
+    lang === "en" ? "See our services" : "Conoce nuestros servicios";
   return (
     <>
       <section
         id="home"
-        className="relative z-10 overflow-hidden bg-white pb-16 pt-[120px] dark:bg-gray-dark md:pb-[120px] md:pt-[150px] xl:pb-[160px] xl:pt-[180px] 2xl:pb-[200px] 2xl:pt-[210px]"
+        className="relative z-10 overflow-hidden bg-[#FAFAF9] pb-20 pt-[120px] dark:bg-[#0c0c0d] md:pb-28 md:pt-[140px] xl:pb-36 xl:pt-[160px] 2xl:pb-44 2xl:pt-[180px]"
       >
-        <div className="container">
+        {/* Background: dot grid + gradient orbs + one soft shape */}
+        <div className="pointer-events-none absolute inset-0 z-0 bg-dot-grid" />
+        <div className="pointer-events-none absolute inset-0 z-0 bg-gradient-mesh" />
+        <div className="pointer-events-none absolute inset-0 z-0">
+          <div className="absolute -right-32 -top-32 h-[520px] w-[520px] rounded-full bg-primary/8 blur-3xl dark:bg-primary/12" />
+          <div className="absolute -bottom-32 -left-32 h-[380px] w-[380px] rounded-full bg-primary/6 blur-3xl dark:bg-primary/8" />
+        </div>
+        {/* Single elegant curve — adds character without template feel */}
+        <div className="pointer-events-none absolute right-0 top-1/2 z-0 w-[min(90vw,420px)] -translate-y-1/2 opacity-40 dark:opacity-30">
+          <svg viewBox="0 0 400 300" fill="none" className="h-auto w-full">
+            <path
+              d="M400 150c-80-60-160-20-200 30-40 50-60 90-80 120-20 30-40 50-120 50"
+              stroke="currentColor"
+              strokeWidth="1.5"
+              strokeLinecap="round"
+              className="text-primary"
+            />
+            <path
+              d="M380 120c-60-40-120 0-160 50"
+              stroke="currentColor"
+              strokeWidth="1"
+              strokeLinecap="round"
+              className="text-primary/70"
+            />
+          </svg>
+        </div>
+
+        <div className="container relative z-10">
           <div className="-mx-4 flex flex-wrap">
             <div className="w-full px-4">
-              <div className="mx-auto max-w-[800px] text-center">
-                <div className="flex items-center justify-center gap-4 md:gap-8 text-center mb-10 flex-col md:flex-row md:mb-20">
-                  <Image
-                    className="block dark:hidden"
-                    src="/images/logo/logo-rob.svg"
-                    alt="Code Craftz"
-                    width={100}
-                    height={100}
-                  />
-                  <Image
-                    className="hidden dark:block"
-                    src="/images/logo/logo-rob-white.svg"
-                    alt="Code Craftz"
-                    width={100}
-                    height={100}
-                  />
+              <div className="mx-auto max-w-[720px] text-center">
+                <div className="mb-12 flex flex-col items-center justify-center gap-6 text-center md:mb-16 md:flex-row md:gap-10">
+                  <div className="relative">
+                    <div className="absolute -inset-3 rounded-full bg-primary/5 blur-xl dark:bg-primary/10" />
+                    <Image
+                      className="relative block dark:hidden"
+                      src="/images/logo/logo-rob.svg"
+                      alt="Code Craftz"
+                      width={88}
+                      height={88}
+                    />
+                    <Image
+                      className="relative hidden dark:block"
+                      src="/images/logo/logo-rob-white.svg"
+                      alt="Code Craftz"
+                      width={88}
+                      height={88}
+                    />
+                  </div>
                   <LogoText />
                 </div>
-                <h1 className="mb-6 text-4xl font-bold leading-tight text-black dark:text-white sm:text-5xl sm:leading-tight md:text-6xl md:leading-tight">
-                  Transformamos tus ideas en <span className="text-primary">soluciones digitales</span> exitosas
+                <h1 className="font-display mb-6 text-4xl font-normal tracking-tight text-black dark:text-white sm:text-5xl md:text-[3.25rem] md:leading-[1.15]">
+                  {title}
                 </h1>
-                <p className="mb-12 text-lg leading-relaxed text-body-color dark:text-body-color-dark sm:text-xl md:text-2xl max-w-3xl mx-auto">
-                  Especialistas en desarrollo web y aplicaciones personalizadas. Desde sitios web informativos hasta plataformas complejas, creamos experiencias digitales que impulsan tu negocio.
+                <p className="mx-auto mb-14 max-w-2xl text-lg leading-relaxed text-body-color dark:text-body-color-dark sm:text-xl md:text-[1.25rem]">
+                  {subtitle}
                 </p>
-                <div className="flex flex-col items-center justify-center space-y-4 sm:flex-row sm:space-x-4 sm:space-y-0">
+                <div className="flex flex-col items-center justify-center gap-4 sm:flex-row sm:gap-4">
                   <Link
                     href="#contact"
-                    className="rounded-xs bg-primary px-8 py-4 text-base font-semibold text-white duration-300 ease-in-out hover:bg-primary/80 shadow-lg hover:shadow-xl transition-all"
+                    className="inline-flex items-center justify-center rounded-2xl bg-primary px-8 py-3.5 text-[15px] font-medium text-white shadow-btn transition-all duration-200 hover:bg-primary-light hover:shadow-btn-hover"
                   >
-                    Comienza tu proyecto
+                    {primaryCta}
                   </Link>
                   <Link
                     href="#features"
-                    className="inline-block rounded-xs border-2 border-primary bg-transparent px-8 py-4 text-base font-semibold text-primary duration-300 ease-in-out hover:bg-primary hover:text-white dark:border-primary dark:text-primary dark:hover:bg-primary dark:hover:text-white"
+                    className="inline-flex items-center justify-center rounded-2xl border border-stroke-stroke bg-transparent px-8 py-3.5 text-[15px] font-medium text-black transition-colors duration-200 hover:border-primary hover:bg-primary/5 hover:text-primary dark:border-stroke-dark dark:text-white dark:hover:border-primary dark:hover:bg-primary/10 dark:hover:text-primary-light"
                   >
-                    Conoce nuestros servicios
+                    {secondaryCta}
                   </Link>
                 </div>
-
               </div>
             </div>
           </div>
         </div>
-        <div className="absolute right-0 top-0 z-[-1] opacity-30 lg:opacity-100">
+        {/* Removed heavy decorative SVGs for a cleaner look */}
+        <div className="absolute right-0 top-0 z-[-1] hidden opacity-0">
           <svg
             width="450"
             height="556"
@@ -193,7 +249,7 @@ const Hero = () => {
             </defs>
           </svg>
         </div>
-        <div className="absolute bottom-0 left-0 z-[-1] opacity-30 lg:opacity-100">
+        <div className="absolute bottom-0 left-0 z-[-1] hidden opacity-0">
           <svg
             width="364"
             height="201"
