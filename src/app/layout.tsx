@@ -24,7 +24,11 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html suppressHydrationWarning lang="es" className={`${dmSans.variable} ${instrumentSerif.variable}`}>
+    <html
+      suppressHydrationWarning
+      lang="es"
+      className={`dark ${dmSans.variable} ${instrumentSerif.variable}`}
+    >
       <head />
 
       <body className="min-h-screen bg-[#FAFAF9] text-[#1a1a1a] antialiased dark:bg-[#0c0c0d] dark:text-[#f5f5f5]" suppressHydrationWarning>

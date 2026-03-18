@@ -68,7 +68,7 @@ export const translations = {
       title: "Arma tu presupuesto",
       paragraph:
         "Selecciona lo que necesitas y verás el total estimado. Los precios son referenciales; al contactarnos afinamos la cotización según tu proyecto.",
-      promoLabel: "OFERTA",
+      promoLabel: "Precios de lanzamiento",
       contextLabel: "Cuéntanos brevemente de qué trata tu negocio, idea o proyecto",
       contextPlaceholder:
         "Ej: Tienda de repostería que quiere vender por WhatsApp, restaurante que necesita reservas y menú online...",
@@ -183,7 +183,7 @@ export const translations = {
       title: "Build your quote",
       paragraph:
         "Select what you need and see the estimated total. Prices are indicative; we’ll refine the quote when you contact us.",
-      promoLabel: "SALE",
+      promoLabel: "Launch prices",
       contextLabel: "Tell us briefly what your business, idea or project is about",
       contextPlaceholder:
         "E.g.: Bakery that wants to sell via WhatsApp, restaurant that needs reservations and online menu...",
