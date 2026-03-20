@@ -40,27 +40,27 @@ export const translations = {
       ],
     },
     projects: {
-      title: "Proyectos",
+      title: "¿Qué podemos crear?",
       paragraph:
-        "Algunos de los trabajos que hemos desarrollado. Cada uno está pensado para resolver necesidades concretas de nuestros clientes.",
+        "Ejemplos de sitios y experiencias que podemos construir para tu negocio. Usa estas referencias como punto de partida y lo adaptamos a tu marca.",
       items: [
         {
           title: "E-commerce con catálogo",
           description:
             "Tienda online con catálogo administrable, carrito integrado con WhatsApp y panel de gestión para el cliente.",
-          linkLabel: "¿Quieres uno similar?",
+          linkLabel: "Ver ejemplo",
         },
         {
           title: "Sitio corporativo",
           description:
             "Página web institucional con múltiples secciones, formulario de contacto y diseño adaptable a móviles.",
-          linkLabel: "Solicitar presupuesto",
+          linkLabel: "Ver ejemplo",
         },
         {
           title: "Landing y conversión",
           description:
-            "Landing page enfocada en conversión con formularios optimizados y integración con herramientas de marketing.",
-          linkLabel: "Ver opciones",
+            "Ejemplo tipo constructora: presupuesto, proceso en pasos, testimonios y FAQ para generar confianza.",
+          linkLabel: "Ver ejemplo",
         },
       ],
     },
@@ -155,27 +155,27 @@ export const translations = {
       ],
     },
     projects: {
-      title: "Projects",
+      title: "What can we build?",
       paragraph:
-        "Some of the work we've delivered. Each one is designed to solve specific needs for our clients.",
+        "A few reference examples of websites and experiences we can build for your business. Use these as inspiration and we’ll tailor everything to your brand.",
       items: [
         {
           title: "E-commerce with catalog",
           description:
             "Online store with manageable catalog, WhatsApp-integrated cart, and client management panel.",
-          linkLabel: "Want something similar?",
+          linkLabel: "See example",
         },
         {
           title: "Corporate site",
           description:
             "Institutional website with multiple sections, contact form, and mobile-friendly design.",
-          linkLabel: "Request a quote",
+          linkLabel: "See example",
         },
         {
           title: "Landing & conversion",
           description:
-            "Conversion-focused landing page with optimized forms and marketing tool integration.",
-          linkLabel: "See options",
+            "Construction-style demo: quote CTA, step-by-step process, testimonials, and FAQ to build trust.",
+          linkLabel: "See example",
         },
       ],
     },

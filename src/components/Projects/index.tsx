@@ -1,7 +1,7 @@
 "use client";
 
 import SectionTitle from "../Common/SectionTitle";
-import SingleProject from "./SingleProject";
+import BuildExampleCard from "./BuildExampleCard";
 import projectsData from "./projectsData";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { translations } from "@/lib/translations";
@@ -20,7 +20,7 @@ const Projects = () => {
 
         <div className="grid grid-cols-1 gap-10 sm:grid-cols-2 lg:grid-cols-3">
           {projectsData.map((project, index) => (
-            <SingleProject
+            <BuildExampleCard
               key={project.id}
               project={{
                 ...project,

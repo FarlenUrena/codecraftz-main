@@ -6,6 +6,7 @@ import Features from "@/components/Features";
 import Hero from "@/components/Hero";
 import Prices from "@/components/Prices/Prices";
 import Projects from "@/components/Projects";
+import FloatingWhatsApp from "@/components/WhatsApp/FloatingWhatsApp";
 import { useState } from "react";
 
 export default function FinalLayout() {
@@ -32,6 +33,7 @@ export default function FinalLayout() {
       <Projects />
       <Prices onDefaultMessageChange={handleDefaultMessageChange} />
       <Contact defaultMessage={defaultMessage} />
+      <FloatingWhatsApp />
     </>
   );
 }

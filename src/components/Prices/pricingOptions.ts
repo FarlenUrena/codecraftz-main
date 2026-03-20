@@ -32,7 +32,8 @@ export const pricingOptions: PricingOption[] = [
     id: "diseno",
     label: "Colores y diseño a elegir",
     description: "Personalizamos paleta y estilo según tu marca.",
-    price: 45,
+    // Always included (requested): shows as +$0 and cannot be removed.
+    price: 0,
     category: "pagina",
   },
   {

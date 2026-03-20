@@ -44,7 +44,7 @@ const Header = () => {
   const menuLabels: Record<number, { es: string; en: string }> = {
     1: { es: "Home", en: "Home" },
     2: { es: "Servicios", en: "Services" },
-    3: { es: "Proyectos", en: "Projects" },
+    3: { es: "¿Qué podemos crear?", en: "What we can build" },
     4: { es: "Precios", en: "Pricing" },
     5: { es: "Contacto", en: "Contact" },
   };

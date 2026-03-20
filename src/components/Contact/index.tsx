@@ -41,8 +41,9 @@ const Contact = ({ defaultMessage = "" }: { defaultMessage?: string }) => {
     const serviceId = process.env.NEXT_PUBLIC_EMAILJS_SERVICE_ID;
     const templateId = process.env.NEXT_PUBLIC_EMAILJS_TEMPLATE_ID;
     const publicKey = process.env.NEXT_PUBLIC_EMAILJS_PUBLIC_KEY;
+    const toEmail = process.env.NEXT_PUBLIC_EMAILJS_TO_EMAIL;
 
-    if (!serviceId || !templateId || !publicKey) {
+    if (!serviceId || !templateId || !publicKey || !toEmail) {
       setStatusMessage({ 
         type: "error", 
         text: "Error de configuración. Por favor, contacta al administrador." 
@@ -57,7 +58,7 @@ const Contact = ({ defaultMessage = "" }: { defaultMessage?: string }) => {
         from_email: email,
         message: message,
         reply_to: email, // Para poder responder directamente al usuario
-        to_email: process.env.NEXT_PUBLIC_EMAILJS_TO_EMAIL || "farlenu@gmail.com",
+        to_email: toEmail,
       };
 
       await emailjs.send(

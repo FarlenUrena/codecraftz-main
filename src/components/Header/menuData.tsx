@@ -15,7 +15,7 @@ const menuData: Menu[] = [
   },
   {
     id: 3,
-    title: "Proyectos",
+    title: "¿Qué podemos crear?",
     path: "#projects",
     newTab: false,
   },

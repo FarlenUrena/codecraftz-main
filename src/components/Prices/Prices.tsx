@@ -23,7 +23,8 @@ const Prices = ({
   const t = translations[lang].prices;
   const categoryLabelsTranslated = t.categories;
   const [selectedIds, setSelectedIds] = useState<Set<string>>(
-    new Set(["seo-basico"])
+    // Always included options
+    new Set(["seo-basico", "diseno"])
   );
   const [projectContext, setProjectContext] = useState("");
   const router = useRouter();
@@ -64,7 +65,7 @@ const Prices = ({
   );
 
   const toggle = (id: string) => {
-    if (id === "seo-basico") return; // Siempre incluido, no se puede quitar
+    if (id === "seo-basico" || id === "diseno") return; // Siempre incluido, no se puede quitar
     const opt = pricingOptions.find((o) => o.id === id);
     setSelectedIds((prev) => {
       const next = new Set(prev);
@@ -214,7 +215,7 @@ const Prices = ({
                   <ul className="space-y-2">
                     {options.map((opt) => {
                       const isSelected = selectedIds.has(opt.id);
-                      const isLocked = opt.id === "seo-basico";
+                      const isLocked = opt.id === "seo-basico" || opt.id === "diseno";
                       return (
                         <li key={opt.id}>
                           <label
